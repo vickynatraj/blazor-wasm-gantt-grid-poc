@@ -1,0 +1,148 @@
+﻿@page "/visualgrid"
+@using Syncfusion.Blazor.Grids
+
+<SfGrid DataSource="@GridData" Height="400" Width="800" GridLines="Syncfusion.Blazor.Grids.GridLine.Both" EnableVirtualization="true">
+    <GridEvents QueryCellInfo="QueryCellInfo" TValue="Order"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" IsPrimaryKey="true" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.EmployeeID) HeaderText="Employee ID" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.OrderDate) HeaderText=" Order Date" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+        <GridColumn Field=@nameof(Order.Freight) HeaderText="Freight" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+        <GridColumn Field=@nameof(Order.ShipCountry) HeaderText="Ship Country" Width="150">
+            <Template>
+                @{
+                    var country = (context as Order).ShipCountry;
+                    if (country == "Austria")
+                    {
+                        <div style="background-color:antiquewhite">@country</div>
+                    }
+                    else
+                    {
+                        <div style="background-color:burlywood">@country</div>
+                    }
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn Field=@nameof(Order.ShipCity) HeaderText="Ship City" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.ShipAddress) HeaderText="Ship Address" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.ShippedDate) HeaderText="Shipped Date" Width="150"></GridColumn>
+    </GridColumns>
+</SfGrid>
+
+<style>
+    /*to change the font style for column data*/
+    .e-attr {
+        font-family: 'Gill Sans';
+        font-weight: bold;
+    }
+    /*to style the Grid header vertical separator*/
+    .e-grid.e-default.e-bothlines .e-headercell {
+        border-left-color: red;
+        border-left-width: 2px;
+    }
+
+
+    /*to style to browser scrollbar*/
+    /* width */
+    ::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        border-radius: 10px;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: red;
+        border-radius: 10px;
+        box-shadow: 2px 5px #b30000;
+    }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b30000;
+        }
+    /*to apply styles to cell*/
+    .e-grid .e-rowcell.below-30 {
+        color: orangered;
+    }
+
+    .e-grid .e-rowcell.below-80 {
+        color: yellow;
+    }
+
+    .e-grid .e-rowcell.above-80 {
+        color: greenyellow
+    }
+</style>
+
+@code{
+
+    public List<Order> GridData { get; set; }
+
+    public void QueryCellInfo(QueryCellInfoEventArgs<Order> args)
+    {
+        if (args.Column.Field == "Freight")
+        {
+            if (args.Data.Freight < 30)
+            {
+                args.Cell.AddClass(new string[] { "below-30" });
+            }
+            else if (args.Data.Freight < 80)
+            {
+                args.Cell.AddClass(new string[] { "below-80" });
+            }
+            else
+            {
+                args.Cell.AddClass(new string[] { "above-80" });
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        List<Order> Order = new List<Order>();
+        int Code = 10000;
+        for (int i = 1; i < 10000; i++)
+        {
+            Order.Add(new Order(Code + 1, "ALFKI", i + 0, 2.3 * i, false, new DateTime(1991, 05, 15), "Berlin", "Denmark", new DateTime(1996, 7, 16), "Kirchgasse 6"));
+            Order.Add(new Order(Code + 2, "ANATR", i + 2, 3.3 * i, true, new DateTime(1990, 04, 04), "Madrid", "Brazil", new DateTime(1996, 9, 11), "Avda. Azteca 123"));
+            Order.Add(new Order(Code + 3, "ANTON", i + 1, 4.3 * i, true, new DateTime(1957, 11, 30), "Cholchester", "Germany", new DateTime(1996, 10, 7), "Carrera 52 con Ave. Bolívar #65-98 Llano Largo"));
+            Order.Add(new Order(Code + 4, "BLONP", i + 3, 5.3 * i, false, new DateTime(1930, 10, 22), "Marseille", "Austria", new DateTime(1996, 12, 30), "Magazinweg 7"));
+            Order.Add(new Order(Code + 5, "BOLID", i + 4, 6.3 * i, true, new DateTime(1953, 02, 18), "Tsawassen", "Switzerland", new DateTime(1997, 12, 3), "1029 - 12th Ave. S."));
+            Code += 5;
+        }
+        GridData = Order;
+    }
+
+    public class Order
+    {
+        public Order(int OrderID, string CustomerID, int EmployeeID, double Freight, bool Verified, DateTime OrderDate, string ShipCity, string ShipCountry, DateTime ShippedDate, string ShipAddress)
+        {
+            this.OrderID = OrderID;
+            this.CustomerID = CustomerID;
+            this.EmployeeID = EmployeeID;
+            this.Freight = Freight;
+            this.Verified = Verified;
+            this.OrderDate = OrderDate;
+            this.ShipCity = ShipCity;
+            this.ShipCountry = ShipCountry;
+            this.ShippedDate = ShippedDate;
+            this.ShipAddress = ShipAddress;
+        }
+        public int? OrderID { get; set; }
+        public string CustomerID { get; set; }
+        public int? EmployeeID { get; set; }
+        public double? Freight { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public bool Verified { get; set; }
+        public DateTime? ShippedDate { get; set; }
+        public string ShipCountry { get; set; }
+        public string ShipCity { get; set; }
+        public string ShipAddress { get; set; }
+    }
+}
