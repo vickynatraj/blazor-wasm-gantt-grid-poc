@@ -5,8 +5,8 @@
     <GridEvents QueryCellInfo="QueryCellInfo" TValue="Order"></GridEvents>
     <GridColumns>
         <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" IsPrimaryKey="true" Width="150"></GridColumn>
-        <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="150"></GridColumn>
-        <GridColumn Field=@nameof(Order.EmployeeID) HeaderText="Employee ID" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name"  Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.EmployeeID) HeaderText="Employee ID" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="150"></GridColumn>
         <GridColumn Field=@nameof(Order.OrderDate) HeaderText=" Order Date" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
         <GridColumn Field=@nameof(Order.Freight) HeaderText="Freight" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
         <GridColumn Field=@nameof(Order.ShipCountry) HeaderText="Ship Country" Width="150">
@@ -67,15 +67,16 @@
             background: #b30000;
         }
     /*to apply styles to cell*/
-    .e-grid .e-rowcell.below-30 {
+
+    .e-grid .e-rowcell.alfkitextstyle {
         color: orangered;
     }
 
-    .e-grid .e-rowcell.below-80 {
+    .e-grid .e-rowcell.anantrtextstyle {
         color: yellow;
     }
 
-    .e-grid .e-rowcell.above-80 {
+    .e-grid .e-rowcell.othertextstyle {
         color: greenyellow
     }
 </style>
@@ -86,26 +87,26 @@
 
     public void QueryCellInfo(QueryCellInfoEventArgs<Order> args)
     {
-        if (args.Column.Field == "Freight")
+        if (args.Column.Field == "CustomerID")
         {
-            if (args.Data.Freight < 30)
+            if (args.Data.CustomerID == "ALFKI")
             {
-                args.Cell.AddClass(new string[] { "below-30" });
+                args.Cell.AddClass(new string[] { "alfkitextstyle" });
             }
-            else if (args.Data.Freight < 80)
+            else if (args.Data.CustomerID == "ANANTR")
             {
-                args.Cell.AddClass(new string[] { "below-80" });
+                args.Cell.AddClass(new string[] { "anantrtextstyle" });
             }
             else
             {
-                args.Cell.AddClass(new string[] { "above-80" });
+                args.Cell.AddClass(new string[] { "othertextstyle" });
             }
         }
     }
 
     protected override void OnInitialized()
     {
-        List<Order> Order = new List<Order>();
+        List<Order>  Order = new List<Order>();
         int Code = 10000;
         for (int i = 1; i < 10000; i++)
         {
