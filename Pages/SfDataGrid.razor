@@ -159,10 +159,12 @@
                     {
                         if (Args.Code == "KeyC")
                         {
+                            ClonedRecords = new List<Order>();
                             CopiedRecords = await Grid.GetSelectedRecords();
                         }
                         else if (Args.Code == "KeyX")
                         {
+                            CopiedRecords = new List<Order>();
                             ClonedRecords = await Grid.GetSelectedRecords();
                             if (ClonedRecords.Count > 0)
                             {
