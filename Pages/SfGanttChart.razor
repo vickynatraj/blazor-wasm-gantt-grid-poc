@@ -33,6 +33,14 @@
                 <input type="number" @bind-value="@RowsHeight">
             </td>
         </tr>
+        <tr>
+            <th scope="col"><h6>Please Choose the Event Date</h6></th>
+        </tr>
+        <tr>
+            <td>
+                <SfDatePicker @bind-Value="Event1"></SfDatePicker>
+            </td>
+        </tr>
     </tbody>
 </table>
 
@@ -167,21 +175,6 @@
     {
         args.Cancel = true;
     }
-    public void ToolBarClick(Syncfusion.Blazor.Navigations.ClickEventArgs Args)
-    {
-        if (Args.Item.Id == "small")
-        {
-            RowsHeight = 20;
-        }
-        if (Args.Item.Id == "medium")
-        {
-            RowsHeight = 40;
-        }
-        if (Args.Item.Id == "big")
-        {
-            RowsHeight = 60;
-        }
-    }
     public static List<TaskData> GetTaskCollection()
     {
         List<TaskData> Tasks = new List<TaskData>() {
@@ -288,7 +281,6 @@
         TaskId = 14,
         TaskName = "Develop floor plan for estimation",
         StartDate = new DateTime(2019, 04, 02),
-
         Progress = 30,
         ParentId = 13
     },
