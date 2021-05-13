@@ -3,32 +3,26 @@
 <table class="table">
     <tbody>
         <tr>
-            <th scope="col"><h6>Please Enter the Level and Click Collapse/Expand  Button</h6></th>
-        </tr>
-        <tr>
+            <td>
+                <h6>Please Enter the Level and Click Collapse/Expand  Button</h6>
+            </td>
             <td>
                 <input type="number" @bind-value="@Level">
             </td>
-        </tr>
-        <tr>
             <td>
                 <button type="button" class="btn btn-primary" @onclick="CollapseAtLevel">Collapse</button>
                 <button type="button" class="btn btn-primary" @onclick="ExpandAtLevel">Expand</button>
             </td>
         </tr>
         <tr>
-            <th scope="col"><h6>To Show/Hide Gantt Pane</h6></th>
-        </tr>
-        <tr>
+            <td><h6>To Show/Hide Gantt Pane</h6></td>
             <td>
                 <button type="button" class="btn btn-primary" @onclick="ShowChart">ShowGanttPane</button>
                 <button type="button" class="btn btn-primary" @onclick="HideChart">HideGanttPane</button>
             </td>
         </tr>
         <tr>
-            <th scope="col"><h6>Please Choose the Event Date</h6></th>
-        </tr>
-        <tr>
+            <td><h6>Please Choose the Event Date</h6></td>
             <td>
                 <SfDatePicker @bind-Value="Event1"></SfDatePicker>
             </td>
@@ -37,7 +31,7 @@
 </table>
 
 
-<SfGantt DataSource="@TaskCollection" Width="1000px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" Toolbar="Tools" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight">
+<SfGantt DataSource="@TaskCollection" Width="1200px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" Toolbar="Tools" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight">
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor"></GanttTaskFields>
     <GanttColumns>
         <GanttColumn Field="TaskId"></GanttColumn>
@@ -69,7 +63,7 @@
             </div>
         </ParentTaskbarTemplate>
         <TaskbarTemplate>
-            <SfTooltip Target=".e-gantt-child-taskbar" CloseDelay="5000" Content=@((context as TaskData).TaskName)>
+            <SfTooltip Target=".e-gantt-child-taskbar" CloseDelay="100" Content=@((context as TaskData).TaskName)>
                 <div class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;">
                     <span class="e-task-label" style="color:black;top:18px;font-size:12px;overflow: hidden;white-space: nowrap;">@((context as TaskData).TaskName)</span>
                 </div>
@@ -133,9 +127,9 @@
     .e-info-icon::before {
         content: '\e729';
     }
-    .e-custom-holiday {
-        background-color: #e82869;
-    }
+    .e-gantt .e-gantt-chart .e-custom-holiday {
+    background-color: #e82869;
+}
 </style>
 
 @code{
