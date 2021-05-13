@@ -25,11 +25,19 @@
                 <button type="button" class="btn btn-primary" @onclick="HideChart">HideGanttPane</button>
             </td>
         </tr>
+        <tr>
+            <th scope="col"><h6>Please Enter the Row Height</h6></th>
+        </tr>
+        <tr>
+            <td>
+                <input type="number" @bind-value="@RowsHeight">
+            </td>
+        </tr>
     </tbody>
 </table>
 
 
-<SfGantt DataSource="@TaskCollection" Width="1000px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true">
+<SfGantt DataSource="@TaskCollection" Width="1000px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight">
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor"></GanttTaskFields>
     <GanttColumns>
         <GanttColumn Field="TaskId"></GanttColumn>
@@ -61,12 +69,18 @@
             </div>
         </ParentTaskbarTemplate>
         <TaskbarTemplate>
-                    <div  class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;">
-                        <span class="e-task-label" style="color:black;top:18px;font-size:12px;overflow: hidden;white-space: nowrap;">@((context as TaskData).TaskName)</span>
-                    </div>
+            <SfTooltip Target=".e-gantt-child-taskbar" CloseDelay="5000" Content=@((context as TaskData).TaskName)>
+                <div class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;">
+                    <span class="e-task-label" style="color:black;top:18px;font-size:12px;overflow: hidden;white-space: nowrap;">@((context as TaskData).TaskName)</span>
+                </div>
+            </SfTooltip>
         </TaskbarTemplate>
     </GanttTemplates>
-    <GanttEvents QueryCellInfo="QueryCellInfo" QueryChartRowInfo="QueryChartRowInfo" TValue="TaskData"></GanttEvents>
+    <GanttEvents QueryCellInfo="QueryCellInfo" QueryChartRowInfo="QueryChartRowInfo" BeforeTooltipRender="BeforeTooltipRender" TValue="TaskData"></GanttEvents>
+    <GanttEventMarkers>
+        <GanttEventMarker Day="Event1" Label="Today"
+                          CssClass="e-custom-event-marker"></GanttEventMarker>
+    </GanttEventMarkers>
 </SfGantt>
 
 <style>
@@ -90,6 +104,7 @@
     .e-gantt .e-left-resize-gripper::before {
         content: '\e80b'
     }
+
     .e-info-icon::before {
         content: '\e729';
     }
@@ -99,10 +114,11 @@
     public SfGantt<TaskData> Gantt;
     public List<TaskData> TaskCollection { get; set; }
     public double Level { get; set; }
+    public int RowsHeight { get; set; } = 36;
+    public DateTime Event1 = System.DateTime.Now;
     protected override void OnInitialized()
     {
         this.TaskCollection = GetTaskCollection();
-
     }
     public class TaskData
     {
@@ -146,6 +162,25 @@
     {
         String[] s1 = new String[1] { "intro" };
         args.Row.AddClass(s1);
+    }
+    public void BeforeTooltipRender(BeforeTooltipRenderEventArgs<TaskData> args)
+    {
+        args.Cancel = true;
+    }
+    public void ToolBarClick(Syncfusion.Blazor.Navigations.ClickEventArgs Args)
+    {
+        if (Args.Item.Id == "small")
+        {
+            RowsHeight = 20;
+        }
+        if (Args.Item.Id == "medium")
+        {
+            RowsHeight = 40;
+        }
+        if (Args.Item.Id == "big")
+        {
+            RowsHeight = 60;
+        }
     }
     public static List<TaskData> GetTaskCollection()
     {
@@ -242,7 +277,97 @@
         Duration = "25",
         Progress = 30,
         ParentId = 11,
-    }
+    },
+    new TaskData() {
+        TaskId = 13,
+        TaskName = "Project estimation",
+        StartDate = new DateTime(2019, 04, 02),
+        EndDate = new DateTime(2019, 04, 21)
+    },
+    new TaskData() {
+        TaskId = 14,
+        TaskName = "Develop floor plan for estimation",
+        StartDate = new DateTime(2019, 04, 02),
+
+        Progress = 30,
+        ParentId = 13
+    },
+    new TaskData() {
+        TaskId = 15,
+        TaskName = "List materials",
+        StartDate = new DateTime(2019, 04, 02),
+        Progress = 40,
+        ParentId = 14
+    },
+    new TaskData() {
+        TaskId = 16,
+        TaskName = "Estimation approval",
+        StartDate = new DateTime(2019, 04, 02),
+        Progress = 30,
+        ParentId = 15
+    },
+    new TaskData() {
+        TaskId = 17,
+        TaskName = "Identifying raw mayerials",
+        StartDate = new DateTime(2019, 04, 02),
+
+        ParentId=16,
+    },
+    new TaskData() {
+        TaskId = 18,
+        TaskName = "Define cost plan",
+        StartDate = new DateTime(2019, 04, 02),
+
+        Progress = 30,
+        ParentId=17,
+    },
+    new TaskData() {
+        TaskId = 19,
+        TaskName = "Manufacturing cost",
+        StartDate = new DateTime(2019, 04, 02),
+
+        Progress = 40,
+        ParentId = 18,
+    },
+    new TaskData() {
+        TaskId = 20,
+        TaskName = "Selling cost",
+        StartDate = new DateTime(2019, 04, 02),
+
+        Progress = 30,
+        ParentId = 19,
+    },
+    new TaskData() {
+        TaskId = 21,
+        TaskName = "Developement of final design",
+        StartDate = new DateTime(2019, 04, 02),
+
+        ParentId=20
+    },
+    new TaskData() {
+        TaskId = 22,
+        TaskName = "Develope dimensions and design",
+        StartDate = new DateTime(2019, 04, 02),
+
+        Progress = 30,
+        ParentId=21,
+    },
+    new TaskData() {
+        TaskId = 23,
+        TaskName = "Develope designs to meet industry",
+        StartDate = new DateTime(2019, 04, 02),
+
+        Progress = 40,
+        ParentId = 22,
+    },
+    new TaskData() {
+        TaskId = 24,
+        TaskName = "Include all the deatails",
+        StartDate = new DateTime(2019, 04, 02),
+
+        Progress = 30,
+        ParentId = 23,
+    },
 };
         return Tasks;
     }
