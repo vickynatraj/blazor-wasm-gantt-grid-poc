@@ -68,7 +68,7 @@
             </SfTooltip>
         </TaskbarTemplate>
     </GanttTemplates>
-    <GanttEvents BeforeTooltipRender="BeforeTooltipRender" OnToolbarClick="ToolBarClick" TValue="TaskData"></GanttEvents>
+    <GanttEvents BeforeTooltipRender="BeforeTooltipRender" OnToolbarClick="ToolBarClick" QueryCellInfo="QueryCellInfo" TValue="TaskData"></GanttEvents>
     <GanttEventMarkers>
         <GanttEventMarker Day="Event1" Label="Today"
                           CssClass="e-custom-event-marker"></GanttEventMarker>
@@ -189,8 +189,6 @@
     }
     public void QueryCellInfo(Syncfusion.Blazor.Grids.QueryCellInfoEventArgs<TaskData> args)
     {
-        String[] s1 = new String[1] { "intro" };
-        args.Cell.AddClass(s1);
         if (isFirst)
         {
             if (args.Column.Index == Gantt.Columns.Count() - 1)
