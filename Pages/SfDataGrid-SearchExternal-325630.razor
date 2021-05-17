@@ -51,7 +51,7 @@
     </DialogTemplates>
 </SfDialog>
 }
-<SfGrid ID="Grid" @ref="Grid" DataSource="@GridData" Height="400" RowHeight="GridRowHeight" EnableVirtualization="true">
+<SfGrid ID="Grid" @ref="Grid" DataSource="@GridData" AllowFiltering="true" Height="400" RowHeight="GridRowHeight" EnableVirtualization="true">
     <GridColumns>
         <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" IsPrimaryKey="true" Width="150"></GridColumn>
         <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer ID" Width="150"></GridColumn>
