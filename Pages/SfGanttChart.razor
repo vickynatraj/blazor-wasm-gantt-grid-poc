@@ -8,8 +8,6 @@
             </td>
             <td>
                 <input type="number" @bind-value="@Level">
-            </td>
-            <td>
                 <button type="button" class="btn btn-primary" @onclick="CollapseAtLevel">Collapse</button>
                 <button type="button" class="btn btn-primary" @onclick="ExpandAtLevel">Expand</button>
             </td>
@@ -31,7 +29,7 @@
 </table>
 
 
-<SfGantt DataSource="@TaskCollection" Width="1200px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" Toolbar="Tools" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight">
+<SfGantt DataSource="@TaskCollection" Width="1200px" Height="450px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" Toolbar="Tools" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight">
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor"></GanttTaskFields>
     <GanttColumns>
         <GanttColumn Field="TaskId"></GanttColumn>
