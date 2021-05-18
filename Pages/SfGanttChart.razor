@@ -25,11 +25,16 @@
                 <SfDatePicker @bind-Value="Event1"></SfDatePicker>
             </td>
         </tr>
+        <tr>
+            <td><h6>Please Enter the Row Height</h6></td>
+            <td>
+                <input type="number" @bind-value="@RowsHeight">
+            </td>
+        </tr>
     </tbody>
 </table>
 
-
-<SfGantt DataSource="@TaskCollection" Width="1200px" Height="450px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" Toolbar="Tools" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight">
+<SfGantt DataSource="@TaskCollection" Width="1200px" Height="450px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight" GridLines="Syncfusion.Blazor.Gantt.GridLine.None">
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor"></GanttTaskFields>
     <GanttColumns>
         <GanttColumn Field="TaskId"></GanttColumn>
@@ -68,7 +73,7 @@
             </SfTooltip>
         </TaskbarTemplate>
     </GanttTemplates>
-    <GanttEvents BeforeTooltipRender="BeforeTooltipRender" OnToolbarClick="ToolBarClick" TValue="TaskData"></GanttEvents>
+    <GanttEvents OnActionBegin= "ActionBeginEvent" BeforeTooltipRender="BeforeTooltipRender" QueryCellInfo="QueryCellInfo" TValue="TaskData"></GanttEvents>
     <GanttEventMarkers>
         <GanttEventMarker Day="Event1" Label="Today"
                           CssClass="e-custom-event-marker"></GanttEventMarker>
@@ -126,8 +131,15 @@
         content: '\e729';
     }
     .e-gantt .e-gantt-chart .e-custom-holiday {
-    background-color: #e82869;
-}
+        background-color: #e82869;
+    }
+    .parent-bold {
+        font-weight: bold;
+    }
+
+    .line {
+        border-width: 0 0 1px !important;
+    }
 </style>
 
 @code{
@@ -135,16 +147,13 @@
     public List<TaskData> TaskCollection { get; set; }
     public double Level { get; set; }
     public int RowsHeight { get; set; } = 36;
-    public List<ItemModel> Tools = new List<ItemModel>();
     public DateTime Event1 = System.DateTime.Now;
     public DateTime Holiday1 = new DateTime(2019, 04, 08);
     public DateTime Holiday2 = new DateTime(2019, 04, 12);
+    public bool isFirst = true;
     protected override void OnInitialized()
     {
         this.TaskCollection = GetTaskCollection();
-        Tools.Add(new ItemModel() { PrefixIcon = "e-big-icon", Id = "small", Align = ItemAlign.Left, TooltipText = "Small" });
-        Tools.Add(new ItemModel() { PrefixIcon = "e-medium-icon", Id = "medium", Align = ItemAlign.Left, TooltipText = "Medium" });
-        Tools.Add(new ItemModel() { PrefixIcon = "e-small-icon", Id = "big", Align = ItemAlign.Left, TooltipText = "Big" });
     }
     public class TaskData
     {
@@ -173,16 +182,33 @@
     {
         this.Gantt.SetSplitterPosition(Syncfusion.Blazor.Gantt.SplitterView.Grid);
     }
+
     public string Formatter(DateTime? date)
     {
         DateTime dateTime = (DateTime)(date);
-        string bottomString = dateTime.Day + "-" + (dateTime.Day + 6);
+        string bottomString = dateTime.Day + "-" + ((dateTime.AddDays(6)).Day);
         return bottomString;
     }
     public void QueryCellInfo(Syncfusion.Blazor.Grids.QueryCellInfoEventArgs<TaskData> args)
     {
-        String[] s1 = new String[1] { "intro" };
-        args.Cell.AddClass(s1);
+        if (isFirst)
+        {
+            if (args.Column.Index == Gantt.Columns.Count() - 1)
+            {
+                isFirst = false;
+            }
+            args.Cell.AddClass(new string[] { "line" });
+        }
+        if (args.Column.Field.Equals("TaskName"))
+        {
+            var Source = Gantt.CurrentViewData;
+            var keys = Source.GroupBy(rec => (rec as IDictionary<string, object>)["ParentId"]).Where(g => g.Key != null).ToDictionary(g => g.Key?.ToString(), g => g.ToList()).Keys.ToList();//collect the ParentId values using GroupBy    
+            if (args.Data.ParentId == null || keys.Contains(args.Data.TaskId.ToString()))   // Checking whether it is a parent record by comparing IdMapping field of record with the ParentID values
+            {
+                args.Cell.AddClass(new string[] { "parent-bold" });   // customized only parent rows
+                args.Cell.AddClass(new string[] { "line" }); // customized to draw line for parent task name
+            }
+        }
     }
     public void QueryChartRowInfo(Syncfusion.Blazor.Gantt.QueryChartRowInfoEventArgs<TaskData> args)
     {
@@ -193,20 +219,9 @@
     {
         args.Cancel = true;
     }
-    public void ToolBarClick(Syncfusion.Blazor.Navigations.ClickEventArgs Args)
+    public void ActionBeginEvent(GanttActionEventArgs<TaskData> args)
     {
-        if (Args.Item.Id == "small")
-        {
-            RowsHeight = 20;
-        }
-        if (Args.Item.Id == "medium")
-        {
-            RowsHeight = 40;
-        }
-        if (Args.Item.Id == "big")
-        {
-            RowsHeight = 60;
-        }
+        args.PredecessorOffSetValidation = true;
     }
     public static List<TaskData> GetTaskCollection()
     {
