@@ -34,7 +34,6 @@
     </tbody>
 </table>
 
-
 <SfGantt DataSource="@TaskCollection" Width="1200px" Height="450px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight" GridLines="Syncfusion.Blazor.Gantt.GridLine.None">
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor"></GanttTaskFields>
     <GanttColumns>
@@ -74,7 +73,7 @@
             </SfTooltip>
         </TaskbarTemplate>
     </GanttTemplates>
-    <GanttEvents BeforeTooltipRender="BeforeTooltipRender" QueryCellInfo="QueryCellInfo" TValue="TaskData"></GanttEvents>
+    <GanttEvents OnActionBegin= "ActionBeginEvent" BeforeTooltipRender="BeforeTooltipRender" QueryCellInfo="QueryCellInfo" TValue="TaskData"></GanttEvents>
     <GanttEventMarkers>
         <GanttEventMarker Day="Event1" Label="Today"
                           CssClass="e-custom-event-marker"></GanttEventMarker>
@@ -219,6 +218,10 @@
     public void BeforeTooltipRender(BeforeTooltipRenderEventArgs<TaskData> args)
     {
         args.Cancel = true;
+    }
+    public void ActionBeginEvent(GanttActionEventArgs<TaskData> args)
+    {
+        args.PredecessorOffSetValidation = true;
     }
     public static List<TaskData> GetTaskCollection()
     {
