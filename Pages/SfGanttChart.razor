@@ -35,7 +35,7 @@
 </table>
 
 <SfGantt DataSource="@TaskCollection" Width="1200px" Height="450px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight" GridLines="Syncfusion.Blazor.Gantt.GridLine.None">
-    <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor"></GanttTaskFields>
+    <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor" ExpandState="IsExpanded"></GanttTaskFields>
     <GanttColumns>
         <GanttColumn Field="TaskId"></GanttColumn>
         <GanttColumn Field="TaskName"></GanttColumn>
@@ -62,11 +62,14 @@
     <GanttTemplates TValue="TaskData">
         <ParentTaskbarTemplate>
             <div class="e-gantt-parent-taskbar e-custom-parent" style="height:22px;border-radius:5px;text-overflow:ellipsis;">
-                <span class="e-task-label" style="color:black;top:18px;font-size:9px;overflow: hidden;white-space: nowrap;">@((context as TaskData).TaskName)</span>
+                @if (((context as TaskData).IsExpanded) == false)
+                {
+                    <span class="e-task-label" style="color:black;top:18px;font-size:9px;overflow: hidden;white-space: nowrap;">@((context as TaskData).Duration)</span>
+                }
             </div>
         </ParentTaskbarTemplate>
         <TaskbarTemplate>
-            <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000">
+            <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000" Position="Position.RightTop" WindowCollision="true">
                     <TooltipTemplates>
                         <Content>
                             <SfButton @ref="ButtonObj1" ID=".e-gantt-child-taskbar" IconCss="e-icons e-info-icon" CssClass="e-info" @onclick="ButtonClick1" Content="@Content1"></SfButton>
@@ -89,6 +92,7 @@
         <GanttHoliday From="@Holiday1" To="@Holiday2" Label="Public holidays"
                       CssClass="e-custom-holiday"></GanttHoliday>
     </GanttHolidays>
+    <GanttSplitterSettings Position="280px"></GanttSplitterSettings>
 </SfGantt>
 
 <style>
@@ -253,6 +257,8 @@
         public int Progress { get; set; }
         public string Predecessor { get; set; }
         public int? ParentId { get; set; }
+        public bool IsExpanded { get; set; }
+        public GanttTaskModel GanttProperties { get; set; }
     }
     public void CollapseAtLevel()
     {
@@ -264,7 +270,7 @@
     }
     public void ShowChart()
     {
-        this.Gantt.SetSplitterPosition(Syncfusion.Blazor.Gantt.SplitterView.Default);
+        this.Gantt.SetSplitterPosition("280px");
     }
     public void HideChart()
     {
@@ -352,7 +358,8 @@
         TaskId = 1,
         TaskName = "Project initiation",
         StartDate = new DateTime(2019, 04, 02),
-        EndDate = new DateTime(2019, 04, 21)
+        EndDate = new DateTime(2019, 04, 21),
+        IsExpanded = false
     },
     new TaskData() {
         TaskId = 2,
@@ -360,7 +367,8 @@
         StartDate = new DateTime(2019, 04, 02),
         Duration = "10",
         Progress = 30,
-        ParentId = 1
+        ParentId = 1,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 3,
@@ -369,7 +377,8 @@
         Duration = "4",
         Progress = 40,
         ParentId = 1,
-        Predecessor = "2"
+        Predecessor = "2",
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 4,
@@ -378,13 +387,15 @@
         Duration = "3",
         Progress = 30,
         ParentId = 1,
-        Predecessor = "3"
+        Predecessor = "3",
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 5,
         TaskName = "Project estimation",
         StartDate = new DateTime(2019, 04, 02),
-        EndDate = new DateTime(2019, 04, 21)
+        EndDate = new DateTime(2019, 04, 21),
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 6,
@@ -393,6 +404,7 @@
         Duration = "3",
         Progress = 30,
         ParentId = 5,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 7,
@@ -401,6 +413,7 @@
         Duration = "13",
         Progress = 40,
         ParentId = 5,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 8,
@@ -409,12 +422,14 @@
         Duration = "25",
         Progress = 30,
         ParentId = 5,
+        IsExpanded = true
     },
      new TaskData() {
         TaskId = 9,
         TaskName = "Demand Analysis",
         StartDate = new DateTime(2019, 04, 02),
-        EndDate = new DateTime(2019, 04, 21)
+        EndDate = new DateTime(2019, 04, 21),
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 10,
@@ -423,6 +438,7 @@
         Duration = "3",
         Progress = 30,
         ParentId = 9,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 11,
@@ -431,6 +447,7 @@
         Duration = "13",
         Progress = 40,
         ParentId = 10,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 12,
@@ -439,12 +456,14 @@
         Duration = "25",
         Progress = 30,
         ParentId = 11,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 13,
         TaskName = "Project estimation",
         StartDate = new DateTime(2019, 04, 02),
-        EndDate = new DateTime(2019, 04, 21)
+        EndDate = new DateTime(2019, 04, 21),
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 14,
@@ -452,7 +471,8 @@
         StartDate = new DateTime(2019, 04, 22),
         Duration = "25",
         Progress = 30,
-        ParentId = 13
+        ParentId = 13,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 15,
@@ -460,7 +480,8 @@
         StartDate = new DateTime(2019, 04, 20),
         Duration = "12",
         Progress = 40,
-        ParentId = 14
+        ParentId = 14,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 16,
@@ -468,7 +489,8 @@
         StartDate = new DateTime(2019, 04, 19),
         Duration = "6",
         Progress = 30,
-        ParentId = 15
+        ParentId = 15,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 17,
@@ -476,6 +498,7 @@
         StartDate = new DateTime(2019, 04, 17),
         Duration = "6",
         ParentId=16,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 18,
@@ -484,6 +507,7 @@
 
         Progress = 30,
         ParentId=17,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 19,
@@ -492,6 +516,7 @@
         Duration = "7",
         Progress = 40,
         ParentId = 18,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 20,
@@ -500,13 +525,15 @@
         Duration = "6",
         Progress = 30,
         ParentId = 19,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 21,
         TaskName = "Developement of final design",
         StartDate = new DateTime(2019, 04, 09),
         Duration = "5",
-        ParentId=20
+        ParentId=20,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 22,
@@ -515,6 +542,7 @@
         Duration = "15",
         Progress = 30,
         ParentId=21,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 23,
@@ -523,6 +551,7 @@
         Duration = "15",
         Progress = 40,
         ParentId = 22,
+        IsExpanded = true
     },
     new TaskData() {
         TaskId = 24,
@@ -531,6 +560,7 @@
         Duration = "25",
         Progress = 30,
         ParentId = 23,
+        IsExpanded = true
     },
 };
         return Tasks;
