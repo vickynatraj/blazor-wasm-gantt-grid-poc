@@ -34,6 +34,51 @@
     </tbody>
 </table>
 
+<div>
+    <div align="right" style='margin-right:20px'>
+    <SfButton CssClass="e-round" Content="D" @onclick="DayModeClick" IsPrimary="@IsDayPrimary"></SfButton>
+    <SfButton CssClass="e-round" Content="W" @onclick="WeekModeClick" IsPrimary="@IsWeekPrimary"></SfButton>
+    <SfButton CssClass="e-round" Content="M" @onclick="MonthModeClick" IsPrimary="@IsMonthPrimary"></SfButton>
+    <SfTooltip Target="#target" CssClass="e-tooltip-css" OpensOn="Click" Position="Position.RightBottom" WindowCollision="true" ShowTipPointer=false>
+            <TooltipTemplates>
+                <Content>
+                    <div>
+                        <div class='info'>
+                            <h3>Layers</h3>
+                            <h4>Show</h4>
+                            <SfCheckBox Label="Actual Hours" @bind-Checked="isChecked"></SfCheckBox>
+                            <br>
+                            <br>
+                            <SfCheckBox Label="Actual Effort" @bind-Checked="isChecked"></SfCheckBox>
+                            <br>
+                            <br>
+                            <SfCheckBox Label="Baselines" @bind-Checked="isChecked"></SfCheckBox>
+                            <br>
+                            <br>
+
+                            <h4>Compare Actual Against</h4>
+                            <SfRadioButton Label="Schedule" Name="options" Value="card" @bind-Checked="stringChecked"></SfRadioButton>
+                            <br>
+                            <br>
+                            <SfRadioButton Label="Compare" Name="options" Value="cash" @bind-Checked="stringChecked"></SfRadioButton>
+                            <br>
+                            <br>
+
+                            <h4>Indicators</h4>
+                                <h5>Over Change</h5>
+                                <h5>THRESHOLD  100%</h5>
+                                <SfSlider Value="100" Min="100" Max="200"></SfSlider>
+                        </div>
+                    </div>
+                </Content>
+            </TooltipTemplates>
+            <SfButton ID="target" IconCss="e-icons e-search" CssClass="e-round"></SfButton>
+        </SfTooltip>
+    </div>
+
+<br>
+
+
 <SfGantt DataSource="@TaskCollection" Width="1200px" Height="450px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight" GridLines="Syncfusion.Blazor.Gantt.GridLine.None">
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor" ExpandState="IsExpanded"></GanttTaskFields>
     <GanttColumns>
@@ -44,17 +89,16 @@
         <GanttColumn Field="Predecessor" HeaderText="Predecessor"></GanttColumn>
     </GanttColumns>
     <GanttTimelineSettings TimelineUnitSize=100>
-        <GanttTopTierSettings Unit="TimelineViewMode.Month" Format="MMMM">
-        </GanttTopTierSettings>
-        <GanttBottomTierSettings Unit="TimelineViewMode.Week">
-            <FormatterTemplate>
+        <GanttTopTierSettings Unit="@TopTierUnit" Format="@TopTierFormat"></GanttTopTierSettings>
+        <GanttBottomTierSettings Unit="@BottomTierUnit">
+                <FormatterTemplate>
                 @{
                     @if (context.Tier == "bottom")
                     {
                         <div> @this.Formatter((context.Date)) </div>
                     }
                 }
-            </FormatterTemplate>
+                </FormatterTemplate>
         </GanttBottomTierSettings>
     </GanttTimelineSettings>
     <GanttEditSettings AllowEditing="true" AllowAdding="true" AllowDeleting="true" AllowTaskbarEditing="true"></GanttEditSettings>
@@ -69,7 +113,7 @@
             </div>
         </ParentTaskbarTemplate>
         <TaskbarTemplate>
-            <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000" Position="Position.RightTop" WindowCollision="true">
+            <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000" Position="Position.RightTop" WindowCollision="true" ShowTipPointer=false>
                     <TooltipTemplates>
                         <Content>
                             <SfButton @ref="ButtonObj1" ID=".e-gantt-child-taskbar" IconCss="e-icons e-info-icon" CssClass="e-info" @onclick="ButtonClick1" Content="@Content1"></SfButton>
@@ -198,33 +242,18 @@
         font-size: 12px;
     }
 
-    .customtooltip.e-tooltip-wrap .e-arrow-tip-outer.e-tip-bottom {
-        border-left: 12px solid transparent;
-        border-right: 14px solid transparent;
-        border-top: 12px solid #transparent;
+    .e-search:before{
+        content: '\e7f8';
     }
-
-    .customtooltip.e-tooltip-wrap .e-arrow-tip-outer.e-tip-top {
-        border-bottom: 12px solid #transparent;
-        border-left: 12px solid transparent;
-        border-right: 12px solid transparent;
+    .e-tooltip-css.e-tooltip-wrap.e-popup {
+        background-color: #60A3D9;
     }
-
-    .customtooltip.e-tooltip-wrap .e-arrow-tip-outer.e-tip-left {
-        border-bottom: 12px solid transparent;
-        border-right: 12px solid #transparent;
-        border-top: 12px solid transparent;
+    .info a {
+        color: #2FA1E3;
     }
-
-    .customtooltip.e-tooltip-wrap .e-arrow-tip-outer.e-tip-right {
-        border-bottom: 12px solid transparent;
-        border-left: 12px solid #transparent;
-        border-top: 12px solid transparent;
-    }
-
-    .customtooltip.e-tooltip-wrap .e-arrow-tip-inner.e-tip-bottom {
-        color: #fff;
-        font-size: 25.9px;
+    .info {
+        padding-left: 12px;
+        padding-right: 5px;
     }
 </style>
 
@@ -243,6 +272,15 @@
     public string Content1 = "Icon1";
     public string Content2 = "Icon2";
     public string Content3 = "Icon3";
+    private bool isChecked = false;
+    private string stringChecked = "card";
+    public string TopTierFormat = "MMMM";
+    TimelineViewMode TopTierUnit = TimelineViewMode.Month;
+    TimelineViewMode BottomTierUnit = TimelineViewMode.Week;
+    private bool IsDayPrimary = false;
+    private bool IsWeekPrimary = true;
+    private bool IsMonthPrimary = false;
+    
     protected override void OnInitialized()
     {
         this.TaskCollection = GetTaskCollection();
@@ -280,8 +318,47 @@
     public string Formatter(DateTime? date)
     {
         DateTime dateTime = (DateTime)(date);
-        string bottomString = dateTime.Day + "-" + ((dateTime.AddDays(6)).Day);
+        string bottomString = "";
+        if (BottomTierUnit.ToString() == "Week")
+        {
+            bottomString = dateTime.Day + "-" + ((dateTime.AddDays(6)).Day);
+        }
+        else if (BottomTierUnit.ToString() == "Day")
+        {
+            bottomString = dateTime.Day.ToString();
+        }
+        else if (BottomTierUnit.ToString() == "Month")
+        {
+            bottomString = dateTime.Month.ToString();
+        }
         return bottomString;
+    }
+    private void DayModeClick(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    {
+        TopTierUnit = TimelineViewMode.Week;
+        BottomTierUnit = TimelineViewMode.Day;
+        TopTierFormat = "MMM dd, yyyy";
+        IsDayPrimary = true;
+        IsWeekPrimary = false;
+        IsMonthPrimary = false;
+    }
+    private void WeekModeClick(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    {
+        TopTierUnit = TimelineViewMode.Month;
+        BottomTierUnit = TimelineViewMode.Week;
+        TopTierFormat = "MMMM";
+        IsDayPrimary = false;
+        IsWeekPrimary = true;
+        IsMonthPrimary = false;
+    }
+    private void MonthModeClick(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    {
+        TopTierUnit = TimelineViewMode.Year;
+        BottomTierUnit = TimelineViewMode.Month;
+        TopTierFormat = "MMM ''yy";
+        IsDayPrimary = false;
+        IsWeekPrimary = false;
+        IsMonthPrimary = true;
     }
     private void ButtonClick1(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
     {
@@ -566,3 +643,4 @@
         return Tasks;
     }
 }
+</div>
