@@ -139,12 +139,37 @@
                             }
                         }
                     }
+                    else
+                    {
+                        var clip = await ClipBoard.ReadTextAsync();
+                        await Task.Delay(100);
+                        if (clip != "" || clip != null)
+                        {
+                            var t = clip.Split("\n");
+                            var lists = new List<Order>();
+                            foreach (var list in t)
+                            {
+                                if (list != "")
+                                {
+                                    var s = list.Split("\t");
+                                    Order Ord = new Order() { OrderID = Convert.ToInt32(s[0]), CustomerID = s[1], OrderDate = Convert.ToDateTime(s[3]), Freight = Convert.ToDouble(s[2].Replace("$", "")), ShipCity = s[4].Split("\r")[0] };
+                                    lists.Add(Ord);
+                                }
+                            }
+                            for (var i = lists.Count; i > 0; i--)
+                            {
+                                Orders.Insert((int)SelectedIndex, lists[i - 1]);
+                            }
+
+                        }
+                    }
                     // refresh the grid data.
                     Grid.Refresh();
                     await Grid.ClearSelection();
                     CopiedRecords = new List<Order>();
                     ClonedRecords = new List<Order>();
                     TEXT = "";
+                    await ClipBoard.ClearTextAsync();
                 }
             }
         }
