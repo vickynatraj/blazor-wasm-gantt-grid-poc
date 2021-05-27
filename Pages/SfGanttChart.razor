@@ -100,7 +100,24 @@
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor" ExpandState="IsExpanded"></GanttTaskFields>
     <GanttColumns>
         <GanttColumn Field="TaskId"></GanttColumn>
-        <GanttColumn Field="TaskName"></GanttColumn>
+        <GanttColumn Field="TaskName" Width=300>
+            <Template>
+                @{
+                    var taskData = (context as TaskData);
+                    <SfTooltip Target="#txt" CssClass="customtooltip" CloseDelay="500" ShowTipPointer=false OffsetX=110 OffsetY=50 WindowCollision=true>
+                        <TooltipTemplates>
+                            <Content>
+                                <SfButton ID=".txt" IconCss="e-icons e-plus-icon" CssClass="e-round" IsPrimary="true" @onclick="PlusButtonClick"></SfButton>
+                                <SfButton ID=".txt" IconCss="e-icons e-back-icon" CssClass="e-round" IsPrimary="true" @onclick="BackButtonClick"></SfButton>
+                                <SfButton ID=".txt" IconCss="e-icons e-forward-icon" CssClass="e-round" IsPrimary="true" @onclick="ForwardButtonClick"></SfButton>
+                                <SfButton ID=".txt" IconCss="e-icons e-option-icon" CssClass="e-round" @onclick="OptionButtonClick"></SfButton>
+                            </Content>
+                        </TooltipTemplates>
+                        <span id="txt">@taskData.TaskName</span>
+                    </SfTooltip>
+                }
+            </Template>
+        </GanttColumn>
         <GanttColumn Field="StartDate"></GanttColumn>
         <GanttColumn Field="Duration"></GanttColumn>
         <GanttColumn Field="Predecessor" HeaderText="Predecessor"></GanttColumn>
@@ -133,9 +150,9 @@
             <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000" ShowTipPointer=false Position="Position.TopRight" OffsetX=-110 OffsetY=10 WindowCollision=true OpensOn="Click">
                     <TooltipTemplates>
                         <Content>
-                            <SfButton @ref="ButtonObj1" ID=".e-gantt-child-taskbar" IconCss="e-icons e-open-icon" CssClass="e-round" @onclick="ButtonClick1"></SfButton>
-                            <SfButton @ref="ButtonObj2" ID=".e-gantt-child-taskbar" IconCss="e-icons e-refresh-icon" CssClass="e-round" @onclick="ButtonClick2"></SfButton>
-                            <SfButton @ref="ButtonObj3" ID=".e-gantt-child-taskbar" IconCss="e-icons e-clear-icon" CssClass="e-round" @onclick="ButtonClick3"></SfButton>
+                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-open-icon" CssClass="e-round" @onclick="ButtonClick1"></SfButton>
+                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-refresh-icon" CssClass="e-round" @onclick="ButtonClick2"></SfButton>
+                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-clear-icon" CssClass="e-round" @onclick="ButtonClick3"></SfButton>
                         </Content>
                     </TooltipTemplates>
                 <div  class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;">
@@ -219,7 +236,10 @@
     .e-gantt .e-left-resize-gripper::before {
         content: '\e80b'
     }
-
+    .e-icons{
+        color: #00ffff;
+        font-size: 26px;
+    }
     .e-open-icon::before {
         content: '\e70f';
     }
@@ -228,6 +248,18 @@
     }
     .e-clear-icon::before {
         content: '\e703';
+    }
+    .e-plus-icon::before {
+        content: '\e759';
+    }
+    .e-back-icon::before {
+        content: '\e7c1';
+    }
+    .e-forward-icon::before {
+        content: '\e7ce';
+    }
+    .e-option-icon::before {
+        content: '\e781';
     }
     .e-gantt .e-gantt-chart .e-custom-holiday {
         background-color: #e82869;
@@ -317,9 +349,6 @@
 
 @code{
     public SfGantt<TaskData> Gantt;
-    SfButton ButtonObj1;
-    SfButton ButtonObj2;
-    SfButton ButtonObj3;
     public List<TaskData> TaskCollection { get; set; }
     public double Level { get; set; }
     public int RowsHeight { get; set; } = 46;
@@ -431,6 +460,22 @@
     private async Task CustomDivClicked()
     {
         await JSRuntime.InvokeAsync<object>("ButtonClick", "Clicked X-ray mode");
+    }
+    private async Task PlusButtonClick()
+    {
+        await JSRuntime.InvokeAsync<object>("ButtonClick", "PlusButtonClick");
+    }
+    private async Task BackButtonClick()
+    {
+        await JSRuntime.InvokeAsync<object>("ButtonClick", "BackButtonClick");
+    }
+    private async Task ForwardButtonClick()
+    {
+        await JSRuntime.InvokeAsync<object>("ButtonClick", "ForwardButtonClick");
+    }
+    private async Task OptionButtonClick()
+    {
+        await JSRuntime.InvokeAsync<object>("ButtonClick", "OptionButtonClick");
     }
     public void QueryCellInfo(Syncfusion.Blazor.Grids.QueryCellInfoEventArgs<TaskData> args)
     {
