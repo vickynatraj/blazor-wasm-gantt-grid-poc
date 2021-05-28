@@ -60,12 +60,12 @@
                 @{ var country = (context as Order).ShipCountry;
                     if (country == "Austria")
                     {
-    <div style="background-color:antiquewhite">@country</div>
- }
-else
-{
-    <div style="background-color:burlywood">@country</div>
- } }
+                        <div style="background-color:antiquewhite">@country</div>
+                    }
+                    else
+                    {
+                        <div style="background-color:burlywood">@country</div>
+                    } }
             </Template>
         </GridColumn>
         <GridColumn Field=@nameof(Order.ShipCity) HeaderText="Ship City" Width="150"></GridColumn>
@@ -74,22 +74,23 @@ else
         <GridColumn HeaderText="Buttons" TextAlign="TextAlign.Center" Width="120">
             <Template>
                 @{ var e = (context as Order);
-    <div class="showhim">
-        HOVER ME
-        <div class="showme">
-            <SfButton CssClass="e-round" IconCss="e-icons e-plus-icon" @onclick="ClickVisButton" IsPrimary="true"></SfButton>
-        </div>
-        <div class="ok"></div>
-    </div>
+                    <div class="showhim">
+                        HOVER ME
+                        <div class="showme">
+                            <SfButton CssClass="e-round" IconCss="e-icons e-plus-icon" @onclick="ClickVisButton" IsPrimary="true"></SfButton>
+                        </div>
+                        <div class="ok"></div>
+                    </div>
                 }
             </Template>
         </GridColumn>
         <GridColumn HeaderText="Comments" TextAlign="TextAlign.Center" Width="120">
             <Template>
                 @{ var order = (context as Order);
-    <div @onclick="@(() => Click(order))">
-        <img height="25" src="@($"Img/Comments.png")" alt="@order.OrderID" />
-    </div> }
+                    <div @onclick="@(() => Click(order))">
+                        <img height="25" src="@($"Img/Comments.png")" alt="@order.OrderID" />
+                    </div>
+                }
             </Template>
         </GridColumn>
     </GridColumns>
@@ -115,6 +116,17 @@ else
 
 
 <style>
+
+    .e-grid.sf-grid .e-gridcontent .e-content.e-yscroll {
+        overflow: hidden;
+    }
+ 
+    .e-grid.sf-grid .e-gridcontent .e-content.e-yscroll:hover {
+        overflow-y: scroll !important;
+        overflow-x: scroll;
+    }
+
+
     /*to change the font style for column data*/
     .e-attr {
         font-family: 'Gill Sans';
@@ -129,25 +141,25 @@ else
 
     /*to style to browser scrollbar*/
     /* width */
-    ::-webkit-scrollbar {
+    .e-grid .e-gridcontent .e-content::-webkit-scrollbar {
         width: 20px;
     }
 
     /* Track */
-    ::-webkit-scrollbar-track {
+    .e-grid .e-gridcontent .e-content::-webkit-scrollbar-track {
         box-shadow: inset 0 0 5px grey;
         border-radius: 10px;
     }
 
     /* Handle */
-    ::-webkit-scrollbar-thumb {
+    .e-grid .e-gridcontent .e-content::-webkit-scrollbar-thumb {
         background: red;
         border-radius: 10px;
         box-shadow: 2px 5px #b30000;
     }
 
         /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
+        .e-grid .e-gridcontent .e-content::-webkit-scrollbar-thumb:hover {
             background: #b30000;
         }
     /*to apply styles to cell*/
@@ -182,99 +194,99 @@ else
 </style>
 
 @code{ SfGrid<Order> Grid;
-            public List<Order> GridData { get; set; }
-            private bool IsVisible { get; set; } = false;
-            string Content = "";
-            private bool IsVisible1 { get; set; } = false;
-            string Content1 = "";
-            public void QueryCellInfo(QueryCellInfoEventArgs<Order> args)
+    public List<Order> GridData { get; set; }
+    private bool IsVisible { get; set; } = false;
+    string Content = "";
+    private bool IsVisible1 { get; set; } = false;
+    string Content1 = "";
+    public void QueryCellInfo(QueryCellInfoEventArgs<Order> args)
+    {
+        if (args.Column.Field == "CustomerID")
+        {
+            if (args.Data.CustomerID == "ALFKI")
             {
-                if (args.Column.Field == "CustomerID")
-                {
-                    if (args.Data.CustomerID == "ALFKI")
-                    {
-                        args.Cell.AddClass(new string[] { "alfkitextstyle" });
-                    }
-                    else if (args.Data.CustomerID == "ANANTR")
-                    {
-                        args.Cell.AddClass(new string[] { "anantrtextstyle" });
-                    }
-                    else
-                    {
-                        args.Cell.AddClass(new string[] { "othertextstyle" });
-                    }
-                }
+                args.Cell.AddClass(new string[] { "alfkitextstyle" });
             }
+            else if (args.Data.CustomerID == "ANANTR")
+            {
+                args.Cell.AddClass(new string[] { "anantrtextstyle" });
+            }
+            else
+            {
+                args.Cell.AddClass(new string[] { "othertextstyle" });
+            }
+        }
+    }
 
-            public void Click(Order ord)
-            {
-                Content = ord.CustomerID + " " + " from " + ord.ShipCountry + " " + " :- You can provide Comments here";
-                this.IsVisible = true;
-            }
-            private void OnOverlayclick(MouseEventArgs arg)
-            {
-                this.IsVisible = false;
-                this.IsVisible1 = false;
-            }
-            public async Task Filter()
-            {
-                await Grid.FilterByColumn("CustomerID", "equal", "ANTON");
-            }
-            public async Task Clear()
-            {
-                await Grid.ClearFiltering();
-            }
+    public void Click(Order ord)
+    {
+        Content = ord.CustomerID + " " + " from " + ord.ShipCountry + " " + " :- You can provide Comments here";
+        this.IsVisible = true;
+    }
+    private void OnOverlayclick(MouseEventArgs arg)
+    {
+        this.IsVisible = false;
+        this.IsVisible1 = false;
+    }
+    public async Task Filter()
+    {
+        await Grid.FilterByColumn("CustomerID", "equal", "ANTON");
+    }
+    public async Task Clear()
+    {
+        await Grid.ClearFiltering();
+    }
 
-            public async Task Custom()
-            {
-                IsVisible1 = true;
-                Content1 = "You can perform Custom actions using this button click";
-            }
-            public void ClickVisButton()
-            {
-                IsVisible1 = true;
-                Content1 = "You can perform Custom actions using this button click";
-            }
+    public async Task Custom()
+    {
+        IsVisible1 = true;
+        Content1 = "You can perform Custom actions using this button click";
+    }
+    public void ClickVisButton()
+    {
+        IsVisible1 = true;
+        Content1 = "You can perform Custom actions using this button click";
+    }
 
-            protected override void OnInitialized()
-            {
-                List<Order> Order = new List<Order>();
-                int Code = 10000;
-                for (int i = 1; i < 10000; i++)
-                {
-                    Order.Add(new Order(Code + 1, "ALFKI", i + 0, 2.3 * i, false, new DateTime(1991, 05, 15), "Berlin", "Denmark", new DateTime(1996, 7, 16), "Kirchgasse 6"));
-                    Order.Add(new Order(Code + 2, "ANATR", i + 2, 3.3 * i, true, new DateTime(1990, 04, 04), "Madrid", "Brazil", new DateTime(1996, 9, 11), "Avda. Azteca 123"));
-                    Order.Add(new Order(Code + 3, "ANTON", i + 1, 4.3 * i, true, new DateTime(1957, 11, 30), "Cholchester", "Germany", new DateTime(1996, 10, 7), "Carrera 52 con Ave. Bolívar #65-98 Llano Largo"));
-                    Order.Add(new Order(Code + 4, "BLONP", i + 3, 5.3 * i, false, new DateTime(1930, 10, 22), "Marseille", "Austria", new DateTime(1996, 12, 30), "Magazinweg 7"));
-                    Order.Add(new Order(Code + 5, "BOLID", i + 4, 6.3 * i, true, new DateTime(1953, 02, 18), "Tsawassen", "Switzerland", new DateTime(1997, 12, 3), "1029 - 12th Ave. S."));
-                    Code += 5;
-                }
-                GridData = Order;
-            }
+    protected override void OnInitialized()
+    {
+        List<Order> Order = new List<Order>();
+        int Code = 10000;
+        for (int i = 1; i < 10000; i++)
+        {
+            Order.Add(new Order(Code + 1, "ALFKI", i + 0, 2.3 * i, false, new DateTime(1991, 05, 15), "Berlin", "Denmark", new DateTime(1996, 7, 16), "Kirchgasse 6"));
+            Order.Add(new Order(Code + 2, "ANATR", i + 2, 3.3 * i, true, new DateTime(1990, 04, 04), "Madrid", "Brazil", new DateTime(1996, 9, 11), "Avda. Azteca 123"));
+            Order.Add(new Order(Code + 3, "ANTON", i + 1, 4.3 * i, true, new DateTime(1957, 11, 30), "Cholchester", "Germany", new DateTime(1996, 10, 7), "Carrera 52 con Ave. Bolívar #65-98 Llano Largo"));
+            Order.Add(new Order(Code + 4, "BLONP", i + 3, 5.3 * i, false, new DateTime(1930, 10, 22), "Marseille", "Austria", new DateTime(1996, 12, 30), "Magazinweg 7"));
+            Order.Add(new Order(Code + 5, "BOLID", i + 4, 6.3 * i, true, new DateTime(1953, 02, 18), "Tsawassen", "Switzerland", new DateTime(1997, 12, 3), "1029 - 12th Ave. S."));
+            Code += 5;
+        }
+        GridData = Order;
+    }
 
-            public class Order
-            {
-                public Order(int OrderID, string CustomerID, int EmployeeID, double Freight, bool Verified, DateTime OrderDate, string ShipCity, string ShipCountry, DateTime ShippedDate, string ShipAddress)
-                {
-                    this.OrderID = OrderID;
-                    this.CustomerID = CustomerID;
-                    this.EmployeeID = EmployeeID;
-                    this.Freight = Freight;
-                    this.Verified = Verified;
-                    this.OrderDate = OrderDate;
-                    this.ShipCity = ShipCity;
-                    this.ShipCountry = ShipCountry;
-                    this.ShippedDate = ShippedDate;
-                    this.ShipAddress = ShipAddress;
-                }
-                public int? OrderID { get; set; }
-                public string CustomerID { get; set; }
-                public int? EmployeeID { get; set; }
-                public double? Freight { get; set; }
-                public DateTime? OrderDate { get; set; }
-                public bool Verified { get; set; }
-                public DateTime? ShippedDate { get; set; }
-                public string ShipCountry { get; set; }
-                public string ShipCity { get; set; }
-                public string ShipAddress { get; set; }
-            } }
+    public class Order
+    {
+        public Order(int OrderID, string CustomerID, int EmployeeID, double Freight, bool Verified, DateTime OrderDate, string ShipCity, string ShipCountry, DateTime ShippedDate, string ShipAddress)
+        {
+            this.OrderID = OrderID;
+            this.CustomerID = CustomerID;
+            this.EmployeeID = EmployeeID;
+            this.Freight = Freight;
+            this.Verified = Verified;
+            this.OrderDate = OrderDate;
+            this.ShipCity = ShipCity;
+            this.ShipCountry = ShipCountry;
+            this.ShippedDate = ShippedDate;
+            this.ShipAddress = ShipAddress;
+        }
+        public int? OrderID { get; set; }
+        public string CustomerID { get; set; }
+        public int? EmployeeID { get; set; }
+        public double? Freight { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public bool Verified { get; set; }
+        public DateTime? ShippedDate { get; set; }
+        public string ShipCountry { get; set; }
+        public string ShipCity { get; set; }
+        public string ShipAddress { get; set; }
+    } }
