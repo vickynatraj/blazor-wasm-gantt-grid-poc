@@ -121,6 +121,7 @@
         <GanttColumn Field="StartDate"></GanttColumn>
         <GanttColumn Field="Duration"></GanttColumn>
         <GanttColumn Field="Predecessor" HeaderText="Predecessor"></GanttColumn>
+        <GanttColumn Field="Done" HeaderText="Done"></GanttColumn>
     </GanttColumns>
     <GanttTimelineSettings TimelineUnitSize=100>
         <GanttTopTierSettings Unit="@TopTierUnit" Format="@TopTierFormat"></GanttTopTierSettings>
@@ -155,9 +156,7 @@
                             <SfButton ID=".e-gantt-child-taskbar" IconCss="e-clear-icon" CssClass="e-round" @onclick="ButtonClick3"></SfButton>
                         </Content>
                     </TooltipTemplates>
-                <div  class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;">
-                    <span class="e-task-label" style="color:black;top:18px;font-size:12px;overflow: hidden;white-space: nowrap;">@((context as TaskData).TaskName)</span>
-                </div>
+                <div  class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;"></div>
             </SfTooltip>
             <SfTooltip Target=".e-custom-div" CssClass="customdivtooltip" ShowTipPointer=false>
                     <TooltipTemplates>
@@ -176,6 +175,7 @@
                     </TooltipTemplates>
                 <div class="e-custom-div" style="height:10px;border-radius:5px;"></div>
             </SfTooltip>
+            <span class="e-task-label" style="color:black;top:18px;font-size:12px;overflow: hidden;white-space: nowrap;">@((context as TaskData).TaskName)</span>
         </TaskbarTemplate>
     </GanttTemplates>
     <GanttEvents OnActionBegin= "ActionBeginEvent" BeforeTooltipRender="BeforeTooltipRender" QueryCellInfo="QueryCellInfo" TValue="TaskData"></GanttEvents>
@@ -351,7 +351,7 @@
     public SfGantt<TaskData> Gantt;
     public List<TaskData> TaskCollection { get; set; }
     public double Level { get; set; }
-    public int RowsHeight { get; set; } = 46;
+    public int RowsHeight { get; set; } = 56;
     public DateTime Event1 = System.DateTime.Now;
     public DateTime Holiday1 = new DateTime(2019, 04, 08);
     public DateTime Holiday2 = new DateTime(2019, 04, 12);
@@ -380,7 +380,7 @@
         public string Predecessor { get; set; }
         public int? ParentId { get; set; }
         public bool IsExpanded { get; set; }
-        public GanttTaskModel GanttProperties { get; set; }
+        public string Done { get; set; }
     }
     public void CollapseAtLevel()
     {
@@ -520,7 +520,8 @@
         TaskName = "Project initiation",
         StartDate = new DateTime(2019, 04, 02),
         EndDate = new DateTime(2019, 04, 21),
-        IsExpanded = false
+        IsExpanded = false,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 2,
@@ -529,7 +530,8 @@
         Duration = "10",
         Progress = 30,
         ParentId = 1,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
     new TaskData() {
         TaskId = 3,
@@ -539,7 +541,8 @@
         Progress = 40,
         ParentId = 1,
         Predecessor = "2",
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
     new TaskData() {
         TaskId = 4,
@@ -549,14 +552,16 @@
         Progress = 30,
         ParentId = 1,
         Predecessor = "3",
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
     new TaskData() {
         TaskId = 5,
         TaskName = "Project estimation",
         StartDate = new DateTime(2019, 04, 02),
         EndDate = new DateTime(2019, 04, 21),
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 6,
@@ -565,7 +570,8 @@
         Duration = "3",
         Progress = 30,
         ParentId = 5,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
     new TaskData() {
         TaskId = 7,
@@ -574,7 +580,8 @@
         Duration = "13",
         Progress = 40,
         ParentId = 5,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
     new TaskData() {
         TaskId = 8,
@@ -583,14 +590,16 @@
         Duration = "25",
         Progress = 30,
         ParentId = 5,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
      new TaskData() {
         TaskId = 9,
         TaskName = "Demand Analysis",
         StartDate = new DateTime(2019, 04, 02),
         EndDate = new DateTime(2019, 04, 21),
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 10,
@@ -599,7 +608,8 @@
         Duration = "3",
         Progress = 30,
         ParentId = 9,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 11,
@@ -608,7 +618,8 @@
         Duration = "13",
         Progress = 40,
         ParentId = 10,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 12,
@@ -617,14 +628,16 @@
         Duration = "25",
         Progress = 30,
         ParentId = 11,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
     new TaskData() {
         TaskId = 13,
         TaskName = "Project estimation",
         StartDate = new DateTime(2019, 04, 02),
         EndDate = new DateTime(2019, 04, 21),
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 14,
@@ -633,7 +646,8 @@
         Duration = "25",
         Progress = 30,
         ParentId = 13,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 15,
@@ -642,7 +656,8 @@
         Duration = "12",
         Progress = 40,
         ParentId = 14,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 16,
@@ -651,7 +666,8 @@
         Duration = "6",
         Progress = 30,
         ParentId = 15,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 17,
@@ -659,16 +675,17 @@
         StartDate = new DateTime(2019, 04, 17),
         Duration = "6",
         ParentId=16,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 18,
         TaskName = "Define cost plan",
         StartDate = new DateTime(2019, 04, 15),
-
         Progress = 30,
         ParentId=17,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 19,
@@ -677,7 +694,8 @@
         Duration = "7",
         Progress = 40,
         ParentId = 18,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 20,
@@ -686,7 +704,8 @@
         Duration = "6",
         Progress = 30,
         ParentId = 19,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 21,
@@ -694,7 +713,8 @@
         StartDate = new DateTime(2019, 04, 09),
         Duration = "5",
         ParentId=20,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 22,
@@ -703,7 +723,8 @@
         Duration = "15",
         Progress = 30,
         ParentId=21,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 23,
@@ -712,7 +733,8 @@
         Duration = "15",
         Progress = 40,
         ParentId = 22,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "Yes"
     },
     new TaskData() {
         TaskId = 24,
@@ -721,7 +743,8 @@
         Duration = "25",
         Progress = 30,
         ParentId = 23,
-        IsExpanded = true
+        IsExpanded = true,
+        Done = "No"
     },
 };
         return Tasks;
