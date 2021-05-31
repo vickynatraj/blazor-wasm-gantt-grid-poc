@@ -36,7 +36,7 @@
     </tbody>
 </table>
 
-<SfToolbar>
+<SfToolbar Width="1200px">
     <ToolbarItems>
         <ToolbarItem>
             <Template>
@@ -151,9 +151,9 @@
             <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000" ShowTipPointer=false Position="Position.TopRight" OffsetX=-110 OffsetY=10 WindowCollision=true OpensOn="Click">
                     <TooltipTemplates>
                         <Content>
-                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-open-icon" CssClass="e-round" @onclick="ButtonClick1"></SfButton>
-                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-refresh-icon" CssClass="e-round" @onclick="ButtonClick2"></SfButton>
-                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-clear-icon" CssClass="e-round" @onclick="ButtonClick3"></SfButton>
+                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-icons e-open-icon" CssClass="e-round" @onclick="ButtonClick1"></SfButton>
+                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-icons e-refresh-icon" CssClass="e-round" @onclick="ButtonClick2"></SfButton>
+                            <SfButton ID=".e-gantt-child-taskbar" IconCss="e-icons e-clear-icon" CssClass="e-round" @onclick="ButtonClick3"></SfButton>
                         </Content>
                     </TooltipTemplates>
                 <div  class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;"></div>
@@ -189,6 +189,10 @@
     </GanttHolidays>
     <GanttSplitterSettings Position="280px"></GanttSplitterSettings>
 </SfGantt>
+<div style ="float:right;margin-top:7px;margin-right:7px;">
+    <SfButton IconCss="e-icons e-top-icon" CssClass="e-round" @onclick="TopIconClicked" IsPrimary=true></SfButton>
+</div>
+
 
 <style>
     @@font-face {
@@ -260,6 +264,9 @@
     }
     .e-option-icon::before {
         content: '\e781';
+    }
+    .e-top-icon::before {
+        content: '\e808';
     }
     .e-gantt .e-gantt-chart .e-custom-holiday {
         background-color: #e82869;
@@ -476,6 +483,10 @@
     private async Task OptionButtonClick()
     {
         await JSRuntime.InvokeAsync<object>("ButtonClick", "OptionButtonClick");
+    }
+    private async Task TopIconClicked()
+    {
+        await JSRuntime.InvokeAsync<object>("ButtonClick", "TopIconClicked");
     }
     public void QueryCellInfo(Syncfusion.Blazor.Grids.QueryCellInfoEventArgs<TaskData> args)
     {
