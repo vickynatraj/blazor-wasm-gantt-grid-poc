@@ -95,7 +95,9 @@
     </ToolbarItems>
 </SfToolbar>
 
-
+<div hidden="@IsTopButtonHide" style ="float:right;margin-top:75px;margin-left:1139px;position:absolute;z-index:3;">
+    <SfButton @ref="TopButton" IsToggle="true" IconCss="@TopIconCss" CssClass="e-round" @onclick="TopIconClicked" IsPrimary=true></SfButton>
+</div>
 <SfGantt DataSource="@TaskCollection" Width="1200px" Height="450px" @ref="Gantt" AllowRowDragAndDrop="true" HighlightWeekends="true" ContextMenuItems="@(new List<object>() { "TaskInformation","Indent","Outdent","DeleteTask"})" AllowReordering="true" ShowColumnMenu="true" TreeColumnIndex=1 RowHeight="RowsHeight" GridLines="Syncfusion.Blazor.Gantt.GridLine.None">
     <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate" Duration="Duration" ParentID="ParentId" Dependency="Predecessor" ExpandState="IsExpanded"></GanttTaskFields>
     <GanttColumns>
@@ -189,8 +191,8 @@
     </GanttHolidays>
     <GanttSplitterSettings Position="280px"></GanttSplitterSettings>
 </SfGantt>
-<div style ="float:right;margin-top:7px;margin-right:7px;">
-    <SfButton IconCss="e-icons e-top-icon" CssClass="e-round" @onclick="TopIconClicked" IsPrimary=true></SfButton>
+<div style ="float:right;margin-top:-51px;margin-left:1139px;position:absolute;z-index:2;">
+    <SfButton IconCss="e-icons e-bottom-icon" CssClass="e-round" @onclick="BottomIconClicked" IsPrimary=true></SfButton>
 </div>
 
 
@@ -265,8 +267,14 @@
     .e-option-icon::before {
         content: '\e781';
     }
-    .e-top-icon::before {
+    .e-bottom-icon::before {
         content: '\e808';
+    }
+    .e-top-icon::before {
+        content: '\e771';
+    }
+    .e-exit-icon::before {
+        content: '\e723';
     }
     .e-gantt .e-gantt-chart .e-custom-holiday {
         background-color: #e82869;
@@ -356,6 +364,9 @@
 
 @code{
     public SfGantt<TaskData> Gantt;
+    public SfButton TopButton;
+    private bool IsTopButtonHide = false;
+    private string TopIconCss = "e-icons e-top-icon";
     public List<TaskData> TaskCollection { get; set; }
     public double Level { get; set; }
     public int RowsHeight { get; set; } = 56;
@@ -376,6 +387,8 @@
     {
         this.TaskCollection = GetTaskCollection();
     }
+
+    
     public class TaskData
     {
         public int TaskId { get; set; }
@@ -400,10 +413,15 @@
     public void ShowChart()
     {
         this.Gantt.SetSplitterPosition("280px");
+        if (IsTopButtonHide)
+        {
+            IsTopButtonHide = !IsTopButtonHide;
+        }
     }
     public void HideChart()
     {
         this.Gantt.SetSplitterPosition(Syncfusion.Blazor.Gantt.SplitterView.Grid);
+        IsTopButtonHide = !IsTopButtonHide;
     }
 
     public string Formatter(DateTime? date)
@@ -486,7 +504,22 @@
     }
     private async Task TopIconClicked()
     {
-        await JSRuntime.InvokeAsync<object>("ButtonClick", "TopIconClicked");
+        if (this.Gantt.SplitterSettings.View == Syncfusion.Blazor.Gantt.SplitterView.Default)
+        {
+            this.Gantt.SplitterSettings.View = Syncfusion.Blazor.Gantt.SplitterView.Chart;
+            this.Gantt.SetSplitterPosition(Syncfusion.Blazor.Gantt.SplitterView.Chart);
+            this.TopIconCss = "e-icons e-exit-icon";
+        }
+        else if (this.Gantt.SplitterSettings.View == Syncfusion.Blazor.Gantt.SplitterView.Chart)
+        {
+            this.Gantt.SplitterSettings.View = Syncfusion.Blazor.Gantt.SplitterView.Default;
+            this.Gantt.SetSplitterPosition(Syncfusion.Blazor.Gantt.SplitterView.Default);
+            this.TopIconCss = "e-icons e-top-icon";
+        }
+    }
+    private async Task BottomIconClicked()
+    {
+        await JSRuntime.InvokeAsync<object>("ButtonClick", "BottomIconClicked");
     }
     public void QueryCellInfo(Syncfusion.Blazor.Grids.QueryCellInfoEventArgs<TaskData> args)
     {
