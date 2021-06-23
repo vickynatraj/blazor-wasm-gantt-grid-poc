@@ -150,7 +150,7 @@
             </div>
         </ParentTaskbarTemplate>
         <TaskbarTemplate>
-            <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000" ShowTipPointer=false Position="Position.TopRight" OffsetX=-110 OffsetY=10 WindowCollision=true OpensOn="Click">
+            <SfTooltip Target=".e-gantt-child-taskbar" CssClass="customtooltip" CloseDelay="1000" ShowTipPointer=false Position="Position.TopRight" OffsetX=-110 OffsetY=10 WindowCollision=true OpensOn="Hover">
                     <TooltipTemplates>
                         <Content>
                             <SfButton ID=".e-gantt-child-taskbar" IconCss="e-icons e-open-icon" CssClass="e-round" @onclick="ButtonClick1"></SfButton>
@@ -158,25 +158,27 @@
                             <SfButton ID=".e-gantt-child-taskbar" IconCss="e-icons e-clear-icon" CssClass="e-round" @onclick="ButtonClick3"></SfButton>
                         </Content>
                     </TooltipTemplates>
-                <div  class="e-gantt-child-taskbar e-custom-moments" style="height:22px;border-radius:5px;"></div>
-            </SfTooltip>
-            <SfTooltip Target=".e-custom-div" CssClass="customdivtooltip" ShowTipPointer=false>
-                    <TooltipTemplates>
-                        <Content>
-                            <div>
-                            <h6>There are 12 more hours changed than scheduled</h6>
-                            <br>
-                            <h6>Changed 28h</h6>
-                            <SfProgressBar Value="28" Height="10" Minimum="0" Maximum="28" TrackThickness="6" ProgressThickness="6" ProgressColor="#FFA500" CornerRadius="CornerType.Round"></SfProgressBar>
-                            <h6>Scheduled 16h</h6>
-                            <SfProgressBar Value="16" Height="10" Minimum="0" Maximum="28" TrackThickness="6" ProgressThickness="6" ProgressColor="#60A3D9" CornerRadius="CornerType.Round"></SfProgressBar>
-                            <br>
-                            <SfButton ID=".e-custom-div" @onclick="CustomDivClicked" Content="Show in X-ray Mode"></SfButton>
-                        </div>
-                        </Content>
-                    </TooltipTemplates>
-                <div class="e-custom-div" style="height:10px;border-radius:5px;"></div>
-            </SfTooltip>
+                    <div class="e-gantt-child-taskbar e-custom-moments" style="height:34px;border-radius:5px;">
+                        <div class="e-custom-div1" style="height:10px;border-radius:5px;margin-top:14px;"></div>
+                        <SfTooltip Target=".e-custom-div" CssClass="customdivtooltip" ShowTipPointer=false>
+                            <TooltipTemplates>
+                                <Content>
+                                    <div>
+                                        <h6>There are 12 more hours changed than scheduled</h6>
+                                        <br>
+                                        <h6>Changed 28h</h6>
+                                        <SfProgressBar Value="28" Height="10" Minimum="0" Maximum="28" TrackThickness="6" ProgressThickness="6" ProgressColor="#FFA500" CornerRadius="CornerType.Round"></SfProgressBar>
+                                        <h6>Scheduled 16h</h6>
+                                        <SfProgressBar Value="16" Height="10" Minimum="0" Maximum="28" TrackThickness="6" ProgressThickness="6" ProgressColor="#60A3D9" CornerRadius="CornerType.Round"></SfProgressBar>
+                                        <br>
+                                        <SfButton ID=".e-custom-div" @onclick="CustomDivClicked" Content="Show in X-ray Mode"></SfButton>
+                                    </div>
+                                </Content>
+                            </TooltipTemplates>
+                            <div class="e-custom-div" style="height:10px;border-radius:5px;"></div>
+                        </SfTooltip>
+                    </div>
+            </SfTooltip>            
             <span class="e-task-label" style="color:black;top:18px;font-size:12px;overflow: hidden;white-space: nowrap;">@((context as TaskData).TaskName)</span>
         </TaskbarTemplate>
     </GanttTemplates>
@@ -229,6 +231,10 @@
 
     .e-custom-div {
         background-color: #FFA500;
+    }
+
+    .e-custom-div1 {
+        background-color: #00ffff;
     }
 
     .intro {
