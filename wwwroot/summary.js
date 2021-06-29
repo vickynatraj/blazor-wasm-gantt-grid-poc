@@ -6,7 +6,7 @@
         //get the grid scrollable content of non virtualized grid
         content = document.getElementById(GridId).querySelectorAll(".e-content")[0];
         //place the summary content beneath the grid content
-        content.insertBefore(summary, content.childNodes[0]);
+        content.insertBefore(summary, content.parentNode[0]);
     }
     else {
         //get the grid scrollable content of virtualied grid
